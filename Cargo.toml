@@ -1,5 +1,5 @@
 [package]
-name = "cryptochallenge"
+name = "cryptopals"
 version = "0.1.0"
 authors = ["Eric S. Bullington <eric.s.bullington@gmail.com>"]
 
