@@ -1,0 +1,7 @@
+[package]
+name = "cryptochallenge"
+version = "0.1.0"
+authors = ["Eric S. Bullington <eric.s.bullington@gmail.com>"]
+
+[dependencies]
+data-encoding = "2.0.0-rc.1"
