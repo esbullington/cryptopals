@@ -1,6 +1,4 @@
 
-use data_encoding::HEXLOWER;
-
 
 fn score_byte(c: u8) -> usize {
     let normalized_char = match c {
@@ -21,7 +19,7 @@ fn score_byte(c: u8) -> usize {
     }
 }
 
-fn score_byte_slice(cipherbytes: &[u8]) -> usize {
+pub fn score_byte_slice(cipherbytes: &[u8]) -> usize {
     cipherbytes
         .iter()
         .fold(0usize, |acc, val| acc + score_byte(*val))
@@ -38,8 +36,7 @@ fn find_key(bytes: &[u8]) -> u8 {
     }).unwrap()
 }
 
-pub fn decode_ciphertext(ciphertext: &str) -> String {
-    let bytes = HEXLOWER.decode(ciphertext.as_bytes()).unwrap();
+pub fn decode_ciphertext(bytes: &[u8]) -> String {
     let key = find_key(&bytes);
     let key_xored = xor_byte_slice(&bytes, key);
     String::from_utf8(key_xored).unwrap()
@@ -63,13 +60,6 @@ mod tests {
         let xored: Vec<u8> = xor_byte_slice(bytes, key);
         assert_eq!(find_key(&xored), key);
     }
-
-	#[test]
-	fn challenge_three() {
-		let ciphertext = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
-		let plaintext = decode_ciphertext(&ciphertext);
-		assert_eq!("Cooking MC's like a pound of bacon", plaintext);
-	}
 
 }
 
