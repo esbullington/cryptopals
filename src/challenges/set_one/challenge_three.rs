@@ -22,11 +22,9 @@ fn score_byte(c: u8) -> usize {
 }
 
 fn score_byte_vector(ciphertext: &Vec<u8>) -> usize {
-    let mut total = 0usize;
-    for byte in ciphertext {
-        total += score_byte(*byte)
-    }
-    total
+    ciphertext
+        .iter()
+        .fold(0usize, |acc, val| acc + score_byte(*val))
 }
 
 fn xor_byte_vector(ciphertext: &Vec<u8>, byte: u8) -> Vec<u8> {
