@@ -21,34 +21,55 @@ fn score_byte(c: u8) -> usize {
     }
 }
 
-fn score_byte_vector(ciphertext: &Vec<u8>) -> usize {
-    ciphertext
+fn score_byte_slice(cipherbytes: &[u8]) -> usize {
+    cipherbytes
         .iter()
         .fold(0usize, |acc, val| acc + score_byte(*val))
 }
 
-fn xor_byte_vector(ciphertext: &Vec<u8>, byte: u8) -> Vec<u8> {
-    ciphertext.iter().map(|&t| t ^ byte ).collect()
+fn xor_byte_slice(cipherbytes: &[u8], byte: u8) -> Vec<u8> {
+    cipherbytes.iter().map(|&t| t ^ byte ).collect()
+}
+
+fn find_key(bytes: &[u8]) -> u8 {
+    (0...255).max_by_key(|key| {
+        let xored = xor_byte_slice(&bytes, *key as u8);
+        score_byte_slice(&xored)
+    }).unwrap()
 }
 
 pub fn decode_ciphertext(ciphertext: &str) -> String {
     let bytes = HEXLOWER.decode(ciphertext.as_bytes()).unwrap();
-    let mut top_score_xored: Vec<u8> = Vec::new();
-    let mut top_score = 0usize;
-    for byte in 0...255 {
-        let xored = xor_byte_vector(&bytes, byte as u8);
-        let scored = score_byte_vector(&xored);
-        if scored > top_score {
-            top_score = scored;
-            top_score_xored = xored;
-        }
-    }
-    String::from_utf8(top_score_xored).unwrap()
+    let key = find_key(&bytes);
+    let key_xored = xor_byte_slice(&bytes, key);
+    String::from_utf8(key_xored).unwrap()
 }
 
-#[test]
-fn challenge_three() {
-    let ciphertext = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
-    let plaintext = decode_ciphertext(&ciphertext);
-    assert_eq!("Cooking MC's like a pound of bacon", plaintext);
+#[cfg(test)]
+mod tests {
+
+    use super::*;
+
+    #[test]
+    fn test_score_byte_slice() {
+        let bytes = b"ETAOIN SHRDLU";
+        assert_eq!(40, score_byte_slice(bytes));
+    }
+
+    #[test]
+    fn test_find_key() {
+        let bytes = b"testing";
+        let key = 42u8;
+        let xored: Vec<u8> = xor_byte_slice(bytes, key);
+        assert_eq!(find_key(&xored), key);
+    }
+
+	#[test]
+	fn challenge_three() {
+		let ciphertext = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
+		let plaintext = decode_ciphertext(&ciphertext);
+		assert_eq!("Cooking MC's like a pound of bacon", plaintext);
+	}
+
 }
+
