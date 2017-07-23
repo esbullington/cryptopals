@@ -40,7 +40,6 @@ fn challenge_four() {
     let buf = BufReader::new(file);
     let v = buf.lines().map(|l| l.expect("Could not parse line")).collect();
     let sentence = challenge_four::find_sentence(v);
-    println!("{}", sentence);
     assert_eq!("Now that the party is jumping", sentence.trim());
 }
 
