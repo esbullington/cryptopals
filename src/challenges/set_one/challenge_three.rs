@@ -29,7 +29,7 @@ fn xor_byte_slice(cipherbytes: &[u8], byte: u8) -> Vec<u8> {
     cipherbytes.iter().map(|&t| t ^ byte ).collect()
 }
 
-fn find_key(bytes: &[u8]) -> u8 {
+pub fn find_key(bytes: &[u8]) -> u8 {
     (0...255).max_by_key(|key| {
         let xored = xor_byte_slice(&bytes, *key as u8);
         score_byte_slice(&xored)
