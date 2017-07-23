@@ -3,10 +3,12 @@ extern crate data_encoding;
 
 use cryptopals::challenges::set_one::*;
 use data_encoding::HEXLOWER;
+use data_encoding::BASE64;
 use std::path::PathBuf;
 use std::io::BufReader;
 use std::fs::File;
 use std::io::prelude::*;
+
 
 #[test]
 fn challenge_one() {
@@ -52,3 +54,20 @@ fn challenge_five() {
     assert_eq!(ciphertext, result);
 }
 
+
+#[test]
+#[ignore]
+fn challenge_six() {
+    let mut d = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    d.push("resources/challenges/set_one/6.txt");
+    let file = File::open(d).unwrap();
+    let buf = BufReader::new(file);
+    let v: Vec<String> = buf.lines().map(|l| l.expect("Could not parse line")).collect();
+    let s = v.concat();
+
+    let bytes = s.as_bytes();
+    let ciphertext = BASE64.decode(&bytes).unwrap();
+
+    let solution = challenge_six::search_for_solution(&ciphertext);
+    assert_eq!("I'm back and I'm ringin' the bell", &solution[0..33]);
+    }
