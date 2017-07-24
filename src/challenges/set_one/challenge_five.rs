@@ -1,11 +1,8 @@
 
-use data_encoding::HEXLOWER;
 
-
-pub fn repeating_key_xor(bytes: &[u8], key: &[u8]) -> String {
+pub fn repeating_key_xor(bytes: &[u8], key: &[u8]) -> Vec<u8> {
     let cycled_key = key.iter().cycle();
-    let output = bytes.iter().zip(cycled_key.take(bytes.len()))
+    bytes.iter().zip(cycled_key.take(bytes.len()))
         .map(|tup| tup.0 ^ tup.1)
-        .collect::<Vec<u8>>();
-    HEXLOWER.encode(&output)
+        .collect::<Vec<u8>>()
 }
