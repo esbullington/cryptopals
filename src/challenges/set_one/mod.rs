@@ -5,3 +5,4 @@ pub mod challenge_four;
 pub mod challenge_five;
 pub mod challenge_six;
 pub mod challenge_seven;
+pub mod challenge_eight;

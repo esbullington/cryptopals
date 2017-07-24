@@ -2,8 +2,8 @@ extern crate cryptopals;
 extern crate data_encoding;
 
 use cryptopals::challenges::set_one::*;
+use cryptopals::utils::*;
 use data_encoding::HEXLOWER;
-use data_encoding::BASE64;
 use std::path::PathBuf;
 use std::io::BufReader;
 use std::fs::File;
@@ -55,22 +55,9 @@ fn challenge_five() {
     assert_eq!(ciphertext, hexlified_result);
 }
 
-fn return_ciphertext(file: &str) -> Vec<u8> {
-    let mut d = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    d.push("resources/challenges/set_one/");
-    d.push(file);
-    let file = File::open(d).unwrap();
-    let buf = BufReader::new(file);
-    let v: Vec<String> = buf.lines().map(|l| l.expect("Could not parse line")).collect();
-    let s = v.concat();
-
-    let bytes = s.as_bytes();
-    BASE64.decode(&bytes).unwrap()
-}
-
 #[test]
 fn challenge_six() {
-    let file = "6.txt";
+    let file = "resources/challenges/set_one/6.txt";
     let ciphertext = return_ciphertext(file);
     let solution = challenge_six::search_for_solution(&ciphertext);
     assert_eq!("I'm back and I'm ringin' the bell", &solution[0..33]);
@@ -78,7 +65,7 @@ fn challenge_six() {
 
 #[test]
 fn challenge_seven() {
-    let file = "7.txt";
+    let file = "resources/challenges/set_one/7.txt";
     let ciphertext = return_ciphertext(file);
     let key = "YELLOW SUBMARINE".as_bytes();
     let decrypted = challenge_seven::decrypt(&ciphertext, &key).unwrap();
