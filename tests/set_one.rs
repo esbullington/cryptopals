@@ -77,16 +77,7 @@ fn challenge_six() {
 }
 
 #[test]
-#[ignore]
-fn challenge_six_alternative_solution() {
-    let file = "6.txt";
-    let ciphertext = return_ciphertext(file);
-    let solution = challenge_six::search_for_solution_two(&ciphertext);
-    assert_eq!("I'm back and I'm ringin' the bell", &solution[0..33]);
-}
-
-#[test]
-fn test_aes_decode() {
+fn challenge_seven() {
     let file = "7.txt";
     let ciphertext = return_ciphertext(file);
     let key = "YELLOW SUBMARINE".as_bytes();
