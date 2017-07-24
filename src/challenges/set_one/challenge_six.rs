@@ -1,5 +1,6 @@
 
-use challenges::set_one::challenge_three::*;
+use challenges::set_one::challenge_three;
+use std::usize;
 
 // Loop through byte, shifting each bit to the first position,
 // and masking off the remaining bits, counting as we go
@@ -42,11 +43,11 @@ fn merge_blocks_together(split_text: Vec<Vec<u8>>) -> Vec<u8> {
     })
 }
 
-fn find_with_keysize(ciphertext: &[u8], keysize: u8) -> Vec<u8> {
+fn decode_with_keysize(ciphertext: &[u8], keysize: u8) -> Vec<u8> {
     let xss = break_blocks_apart(ciphertext, keysize);
     let mut keys: Vec<u8> = Vec::new();
     for xs in &xss {
-        let found_key = find_key(&xs);
+        let found_key = challenge_three::find_key(&xs);
         keys.push(found_key);
     }
     let mut results = Vec::new();
@@ -57,13 +58,38 @@ fn find_with_keysize(ciphertext: &[u8], keysize: u8) -> Vec<u8> {
     merge_blocks_together(results)
 }
 
-pub fn search_for_solution(ciphertext: &[u8]) -> String {
+fn find_keysize(ciphertext: &[u8]) -> u8 {
+	let mut keysize_so_far = 0usize;
+	let mut least_score_so_far = usize::MAX;
+	for keysize in 2..40 {
+		let mut sum = 0;
+		let count = ciphertext.len() / keysize - 1;
+		for i in 0..count {
+			let first_block = &ciphertext[i * keysize..(i+1) * keysize];
+			let second_block = &ciphertext[(i+1) * keysize..(i+2) * keysize];
+			let dist = hamming_score(first_block, second_block);
+			sum += dist;
+		}
+
+		let score = sum / count / keysize;
+		if score < least_score_so_far {
+			keysize_so_far = keysize;
+			least_score_so_far = score;
+		}
+	}
+	keysize_so_far as u8 
+}
+
+// Did this way first, works, but is quite inefficient
+// since we're having to decode and score each possible solution
+// for keysizes between 2 and 40
+pub fn search_for_solution_two(ciphertext: &[u8]) -> String {
     let mut high_score = 0usize;
     let mut best_solution: Vec<u8> = Vec::new();    
     for keysize in 2..40 {
         let uk = keysize as u8;
-        let possible_solution = find_with_keysize(ciphertext, uk);
-        let score = score_byte_slice(&possible_solution);
+        let possible_solution = decode_with_keysize(ciphertext, uk);
+        let score = challenge_three::score_byte_slice(&possible_solution);
         if score > high_score {
             high_score = score;
             best_solution = possible_solution;
@@ -71,6 +97,15 @@ pub fn search_for_solution(ciphertext: &[u8]) -> String {
     }
     String::from_utf8(best_solution).unwrap()
 }
+
+
+// By the book
+pub fn search_for_solution(ciphertext: &[u8]) -> String {
+    let keysize = find_keysize(ciphertext);
+    let bytes = decode_with_keysize(ciphertext, keysize);
+    String::from_utf8(bytes).unwrap()
+}
+
 
 #[cfg(test)]
 mod tests {

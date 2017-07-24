@@ -55,10 +55,7 @@ fn challenge_five() {
     assert_eq!(ciphertext, hexlified_result);
 }
 
-
-#[test]
-#[ignore]
-fn challenge_six() {
+fn return_ciphertext() -> Vec<u8> {
     let mut d = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     d.push("resources/challenges/set_one/6.txt");
     let file = File::open(d).unwrap();
@@ -67,8 +64,20 @@ fn challenge_six() {
     let s = v.concat();
 
     let bytes = s.as_bytes();
-    let ciphertext = BASE64.decode(&bytes).unwrap();
+    BASE64.decode(&bytes).unwrap()
+}
 
+#[test]
+fn challenge_six() {
+    let ciphertext = return_ciphertext();
     let solution = challenge_six::search_for_solution(&ciphertext);
     assert_eq!("I'm back and I'm ringin' the bell", &solution[0..33]);
-    }
+}
+
+#[test]
+#[ignore]
+fn challenge_six_alternative_solution() {
+    let ciphertext = return_ciphertext();
+    let solution = challenge_six::search_for_solution_two(&ciphertext);
+    assert_eq!("I'm back and I'm ringin' the bell", &solution[0..33]);
+}
