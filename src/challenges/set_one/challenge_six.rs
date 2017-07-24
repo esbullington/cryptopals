@@ -58,10 +58,10 @@ fn decode_with_keysize(ciphertext: &[u8], keysize: u8) -> Vec<u8> {
     merge_blocks_together(results)
 }
 
-fn find_keysize(ciphertext: &[u8]) -> u8 {
+pub fn find_keysize(ciphertext: &[u8], range: &[usize]) -> u8 {
 	let mut keysize_so_far = 0usize;
 	let mut least_score_so_far = usize::MAX;
-	for keysize in 2..40 {
+	for &keysize in range.iter() {
 		let mut sum = 0;
 		let count = ciphertext.len() / keysize - 1;
 		for i in 0..count {
@@ -101,7 +101,8 @@ pub fn search_for_solution_two(ciphertext: &[u8]) -> String {
 
 // By the book
 pub fn search_for_solution(ciphertext: &[u8]) -> String {
-    let keysize = find_keysize(ciphertext);
+    let range: Vec<usize> = (2..40).collect();
+    let keysize = find_keysize(ciphertext, &range);
     let bytes = decode_with_keysize(ciphertext, keysize);
     String::from_utf8(bytes).unwrap()
 }
