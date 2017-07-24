@@ -55,9 +55,10 @@ fn challenge_five() {
     assert_eq!(ciphertext, hexlified_result);
 }
 
-fn return_ciphertext() -> Vec<u8> {
+fn return_ciphertext(file: &str) -> Vec<u8> {
     let mut d = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    d.push("resources/challenges/set_one/6.txt");
+    d.push("resources/challenges/set_one/");
+    d.push(file);
     let file = File::open(d).unwrap();
     let buf = BufReader::new(file);
     let v: Vec<String> = buf.lines().map(|l| l.expect("Could not parse line")).collect();
@@ -69,7 +70,8 @@ fn return_ciphertext() -> Vec<u8> {
 
 #[test]
 fn challenge_six() {
-    let ciphertext = return_ciphertext();
+    let file = "6.txt";
+    let ciphertext = return_ciphertext(file);
     let solution = challenge_six::search_for_solution(&ciphertext);
     assert_eq!("I'm back and I'm ringin' the bell", &solution[0..33]);
 }
@@ -77,7 +79,18 @@ fn challenge_six() {
 #[test]
 #[ignore]
 fn challenge_six_alternative_solution() {
-    let ciphertext = return_ciphertext();
+    let file = "6.txt";
+    let ciphertext = return_ciphertext(file);
     let solution = challenge_six::search_for_solution_two(&ciphertext);
     assert_eq!("I'm back and I'm ringin' the bell", &solution[0..33]);
+}
+
+#[test]
+fn test_aes_decode() {
+    let file = "7.txt";
+    let ciphertext = return_ciphertext(file);
+    let key = "YELLOW SUBMARINE".as_bytes();
+    let decrypted = challenge_seven::decrypt(&ciphertext, &key).unwrap();
+    let plaintext = String::from_utf8(decrypted).unwrap();
+    assert_eq!("I'm back and I'm ringin' the bell", &plaintext[0..33]);
 }
