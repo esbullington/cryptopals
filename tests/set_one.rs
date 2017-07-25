@@ -72,3 +72,19 @@ fn challenge_seven() {
     let plaintext = String::from_utf8(decrypted).unwrap();
     assert_eq!("I'm back and I'm ringin' the bell", &plaintext[0..33]);
 }
+
+#[test]
+fn challenge_eight() {
+    let mut d = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let file = "resources/challenges/set_one/8.txt";
+    d.push(file);
+    let file = File::open(d).unwrap();
+    let buf = BufReader::new(file);
+    let ciphertext: Vec<Vec<u8>> = buf.lines().map(|l|{
+        let s = l.expect("Could not parse line");
+        let bytes = s.trim().as_bytes();
+        HEXLOWER.decode(&bytes).unwrap()
+    }).collect();
+    let line_number = challenge_eight::find_aes_ecb_block(ciphertext);
+    assert_eq!(132, line_number);
+}

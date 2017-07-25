@@ -6,3 +6,5 @@ authors = ["Eric S. Bullington <eric.s.bullington@gmail.com>"]
 [dependencies]
 data-encoding = "2.0.0-rc.1"
 rust-crypto = "^0.2"
+num = "0.1.40"
+itertools = "0.6.1"
