@@ -6,7 +6,7 @@ pub fn decrypt(encrypted_data: &[u8], key: &[u8]) -> Result<Vec<u8>, symmetricci
     let mut decryptor = aes::ecb_decryptor(
             aes::KeySize::KeySize128,
             key,
-            blockmodes::PkcsPadding);
+            blockmodes::NoPadding);
 
     let mut final_result = Vec::<u8>::new();
     let mut read_buffer = buffer::RefReadBuffer::new(encrypted_data);
