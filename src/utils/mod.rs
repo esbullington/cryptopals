@@ -5,15 +5,18 @@ use std::fs::File;
 use std::io::prelude::*;
 use num;
 
-pub fn return_ciphertext(file: &str) -> Vec<u8> {
+pub fn return_raw(file: &str) -> Vec<u8> {
     let mut d = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     d.push(file);
     let file = File::open(d).unwrap();
     let buf = BufReader::new(file);
     let v: Vec<String> = buf.lines().map(|l| l.expect("Could not parse line")).collect();
     let s = v.concat();
+    s.as_bytes().to_vec()
+}
 
-    let bytes = s.as_bytes();
+pub fn return_ciphertext(file: &str) -> Vec<u8> {
+    let bytes = return_raw(file);
     BASE64.decode(&bytes).unwrap()
 }
 
