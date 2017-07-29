@@ -17,13 +17,16 @@ fn challenge_one() {
     assert_eq!(base_64_string, challenge_one::hex_to_base64(&hex_string));
 }
 
-
 #[test]
 fn challenge_two() {
     let original_string = "1c0111001f010100061a024b53535009181c";
     let xor_string = "686974207468652062756c6c277320657965";
-    let result_string = "746865206b696420646f6e277420706c6179";
-    assert_eq!(result_string, challenge_two::fixed_xor(&original_string, &xor_string));
+    let xs = HEXLOWER.decode(original_string.as_bytes()).unwrap();
+    let ys = HEXLOWER.decode(xor_string.as_bytes()).unwrap();
+    let raw_result = challenge_two::fixed_xor(&xs, &ys);
+    let test_result = HEXLOWER.encode(&raw_result);
+    let result = "746865206b696420646f6e277420706c6179";
+    assert_eq!(result, test_result);
 }
 
 #[test]
